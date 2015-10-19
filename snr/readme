@@ -1,0 +1,14 @@
+Signal to Noise Ratio (SNR) of digital raw signals
+
+Directory contents:
+
+* The "compile" script. Use it as:
+
+      source ./compile
+
+* This "readme" file.
+
+* The "src" directory, with the source code.
+
+* A "test" script that shows how to call "snr".
+

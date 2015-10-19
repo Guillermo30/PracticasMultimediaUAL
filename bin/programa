@@ -1,0 +1,75 @@
+#!/usr/bin/python
+
+import sys
+import struct
+
+
+
+def z_inversa(entrada, z):
+	salida = z
+	z=entrada
+	return salida
+
+def modulador(entrada):
+	return entrada // 256
+
+def demodulador(entrada):
+	return entrada * 256
+
+def cuantificador(entrada):
+	entrada = entrada // 256
+	entrada *= 256
+	return entrada
+
+
+def encoder():
+	s_prima = 0
+	z = 0
+	while True:
+		#Lee entrada
+		entrada_limpia = struct.unpack('h', sys.stdin.buffer.read(2))[0]
+
+		#Procesa
+		restada = entrada_limpia - s_prima
+		cuantificada = cuantificador(restada)
+		sumada = cuantificada + s_prima
+		s_prima = z_inversa(sumada, z)
+		salida = modulador(cuantificada)
+		#print("%d %d"%(cuantificada,salida), file=sys.stderr)
+		#Emite entrda
+		sys.stdout.buffer.write(struct.pack('b', salida))
+
+
+def decoder():
+	s_prima = 0
+	while True:
+		#Lee entrada
+		entrada_limpia = struct.unpack('b', sys.stdin.buffer.read(1))[0]
+
+		#Procesa
+		demodulada = demodulador(entrada_limpia)
+		salida = demodulada + s_prima
+		#s_prima = z_inversa(salida)
+
+		#Emite entrda
+		sys.stdout.buffer.write(struct.pack('h', salida))
+
+def nada():
+	while True:
+		#Lee entrada
+		entrada_limpia = struct.unpack('h', sys.stdin.buffer.read(2))[0]
+		#Emite entrda
+		sys.stdout.buffer.write(struct.pack('h', entrada_limpia))
+
+if __name__ == '__main__':
+	if str(sys.argv[1]) == '-c':
+		print ('Codificando...')
+		encoder()
+	elif str(sys.argv[1]) == '-d':
+		print ('Decodificando...')
+		decoder()
+	elif str(sys.argv[1]) == '-n':
+		print ('No haciendo nada...')
+		nada()
+	else:
+		print ('Se necesita un parametro de entrada.')
